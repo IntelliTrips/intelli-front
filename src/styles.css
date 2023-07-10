@@ -1,0 +1,19 @@
+.container{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: linear-gradient(#000842, #5E258A);
+    text-align: center;
+    color: #fff;
+}
+
+.containerInput{
+    background-color: rgba(237, 146, 255, 0.2);
+    padding: 15px;
+    margin: 34px 0;
+    display: flex;
+    border-radius: 8px;
+    box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.2);
+}
