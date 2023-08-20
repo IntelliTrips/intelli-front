@@ -19,6 +19,7 @@ export function Day({ day, locations }: DayProps) {
         {locations.map((location) => {
           return (
             <Location
+              key={location.name}
               name={location.name}
               description={location.description}
               image={location.image}

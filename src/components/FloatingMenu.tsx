@@ -17,3 +17,12 @@ export function FloatingMenu() {
     </Link>
   );
 }
+
+{
+  /* <Popover>
+<PopoverTrigger className='fixed bottom-8 right-8 bg-[#5E258A] p-4 rounded-full transition-colors'>
+  <PlaneIcon />
+</PopoverTrigger>
+<PopoverContent className=''>Oi</PopoverContent>
+</Popover> */
+}

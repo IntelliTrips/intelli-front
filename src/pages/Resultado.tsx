@@ -1,75 +1,63 @@
 import { Day } from '@/components/Day';
 import { FloatingMenu } from '@/components/FloatingMenu';
 import { Logo } from '@/components/Logo';
-// import { format } from 'date-fns';
 import { Heart } from 'lucide-react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
-// function formatDateToYYYYMMDD(date: Date) {
-//   const year = date.getFullYear();
-//   const month = String(date.getMonth() + 1).padStart(2, '0');
-//   const day = String(date.getDate()).padStart(2, '0');
-//   return `${year}-${month}-${day}`;
-// }
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export function Resultado() {
-  // const { state } = useLocation();
-  // const { checkin, checkout, custo, destino, origem, viajantes } = state as {
-  //   checkin: Date;
-  //   checkout: Date;
-  //   custo: number;
-  //   destino: string;
-  //   origem: string;
-  //   viajantes: number;
-  // };
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [roteiros, setRoteiros] = useState<
+    {
+      data_hora: string;
+      lugar: string;
+      atividade: string;
+      custo: number;
+    }[]
+  >([]);
+  const [destino, setDestino] = useState('');
 
-  // const [roteiros, setRoteiros] = useState([]);
+  useEffect(() => {
+    if ('state' in location === false) {
+      navigate('/');
+    }
 
-  // function onLoad() {
-  //   const headers = new Headers();
-  //   headers.set('Content-Type', 'application/json');
-  //   headers.set('Authorization', 'Basic ' + btoa('gian:senha1234'));
+    const { state } = location as {
+      state: {
+        roteiros: {
+          data_hora: string;
+          lugar: string;
+          atividade: string;
+          custo: number;
+        }[];
+        destino: string;
+      };
+    };
 
-  //   const response = fetch('http://127.0.0.1:8000/roteiro/v1/roteiros', {
-  //     method: 'POST',
-  //     headers,
-  //     mode: 'cors',
-  //     body: JSON.stringify({
-  //       partida: origem,
-  //       destino: destino,
-  //       data_ida: formatDateToYYYYMMDD(checkin),
-  //       data_volta: formatDateToYYYYMMDD(checkout),
-  //       quantidade_pessoas: viajantes,
-  //       custo: custo,
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then(
-  //       (data: {
-  //         custo: number;
-  //         data_ida: string;
-  //         data_volta: string;
-  //         destino: string;
-  //         id: number;
-  //         partida: string;
-  //         quantidade_pessoas: number;
-  //         resposta_chatgpt: string;
-  //         texto_usuario: string;
-  //       }) => {
+    if (state === null) {
+      navigate('/');
+    }
 
-  //         setRoteiros(JSON.parse(data.resposta_chatgpt).roteiro);
-  //       }
-  //     );
-  // }
+    const { roteiros: roteirosRecebidos, destino: destinoRecebido } = state as {
+      roteiros: {
+        data_hora: string;
+        lugar: string;
+        atividade: string;
+        custo: number;
+      }[];
+      destino: string;
+    };
 
-  // useEffect(() => {
-  //   onLoad();
-  // }, []);
+    setRoteiros(roteirosRecebidos);
+    setDestino(destinoRecebido);
+
+    console.log(roteirosRecebidos);
+  }, []);
 
   const [hearted, setHearted] = useState(false);
   return (
-    <div className='flex min-h-screen flex-col items-center justify-start gap-12 bg-gradient-to-b from-violet-300 to-violet-400 py-10 lg:py-24'>
+    <div className='flex min-h-screen flex-col items-center justify-start gap-12 bg-home py-10 lg:py-24'>
       <FloatingMenu />
 
       <Link to='/'>
@@ -77,7 +65,7 @@ export function Resultado() {
       </Link>
       <div className='flex gap-7 items-center'>
         <h1 className='text-2xl lg:text-6xl font-bold text-[#5E258A]'>
-          Viagem para Rio de Janeiro
+          Viagem para {destino}
         </h1>
         <button>
           <Heart
@@ -88,19 +76,9 @@ export function Resultado() {
         </button>
       </div>
       <div className='space-y-4 p-4 lg:space-y-8'>
-        {/* {roteiros.map((roteiro) => {
-          return (
-            <Day
-              day={format(
-                new Date(roteiro.data_e_hora.replaceAll('-', '/')),
-                'dd/MM/yyyy'
-              )}
-              locations={[]}
-            />
-          );
-        })} */}
         <Day
           day='1'
+          key={1}
           locations={[
             {
               image:
@@ -120,6 +98,7 @@ export function Resultado() {
         />
         <Day
           day='2'
+          key={2}
           locations={[
             {
               image:

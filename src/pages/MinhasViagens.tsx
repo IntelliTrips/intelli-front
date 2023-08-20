@@ -22,7 +22,7 @@ export function MinhasViagens() {
     },
   ];
   return (
-    <div className='flex min-h-screen flex-col items-center justify-start gap-12 bg-gradient-to-b from-violet-300 to-violet-400 py-10 lg:py-24'>
+    <div className='flex min-h-screen flex-col items-center justify-start gap-12 bg-home py-10 lg:py-24'>
       <FloatingMenu />
 
       <Link to='/'>
