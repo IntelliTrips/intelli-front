@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.bg-home {
+  background-image: url('./assets/home-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-login {
+  background-image: url('./assets/login-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
