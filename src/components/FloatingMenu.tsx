@@ -7,7 +7,7 @@ export function FloatingMenu() {
   return (
     <Link
       to='/minhas-viagens'
-      className='fixed bottom-8 right-8 bg-[#5E258A] p-4 rounded-full transition-colors'
+      className='fixed bottom-8 right-8 bg-purple-700 p-4 rounded-full transition-colors shadow-md'
       onClick={() => {
         setActive(!active);
       }}
@@ -20,7 +20,7 @@ export function FloatingMenu() {
 
 {
   /* <Popover>
-<PopoverTrigger className='fixed bottom-8 right-8 bg-[#5E258A] p-4 rounded-full transition-colors'>
+<PopoverTrigger className='fixed bottom-8 right-8 bg-purple-800 p-4 rounded-full transition-colors'>
   <PlaneIcon />
 </PopoverTrigger>
 <PopoverContent className=''>Oi</PopoverContent>

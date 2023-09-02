@@ -1,6 +1,7 @@
 import { Logo } from '../components/Logo';
 import { FormItem } from '../components/FormItem';
 
+import cidades from '../lib/cidades.json';
 import rioImage from '../assets/rio.jpg';
 import gramadoImage from '../assets/gramado.jpg';
 import maceioImage from '../assets/maceio.jpg';
@@ -19,26 +20,15 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { ptBR } from 'date-fns/locale';
+import { api } from '@/lib/api';
 
 export function Home() {
   const [origem, setOrigem] = useState('');
-  // const [origemOpen, setOrigemOpen] = useState(false);
   const [destino, setDestino] = useState('');
   const [datas, setDatas] = useState<DateRange | undefined>(undefined);
   const [custo, setCusto] = useState('');
   const [viajantes, setViajantes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  // const lugares = [
-  //   {
-  //     value: 'recife',
-  //     label: 'Recife',
-  //   },
-  //   {
-  //     value: 'porto-de-galinhas',
-  //     label: 'Porto de Galinhas',
-  //   },
-  // ];
-
   const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -50,49 +40,36 @@ export function Home() {
 
     const headers = new Headers();
     headers.set('Content-Type', 'application/json');
-    headers.set('Authorization', 'Basic ' + btoa('gian1:gian1'));
 
     setIsLoading(true);
 
-    fetch('http://127.0.0.1:8000/roteiro/v1/roteiros', {
-      method: 'POST',
-      headers,
-      mode: 'cors',
-      body: JSON.stringify({
+    api
+      .post('/roteiro/v1/roteiros', {
         partida: origem,
         destino: destino,
         data_ida: format(datas?.from ?? new Date(), 'yyyy-MM-dd'),
         data_volta: format(datas?.to ?? new Date(), 'yyyy-MM-dd'),
         quantidade_pessoas: viajantes,
         custo: custo,
-      }),
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          response
-            .json()
-            .then((data) => {
-              const roteiros = JSON.parse(
-                data.resposta_chatgpt.replaceAll("'", '"')
-              ).roteiro;
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          const roteiros = JSON.parse(
+            res.data.resposta_chatgpt.replaceAll("'", '"')
+          ).roteiro;
 
-              setIsLoading(false);
-              navigate('/resultado', {
-                state: {
-                  roteiros,
-                  destino,
-                },
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else {
-          alert('Erro ao buscar roteiros');
+          setIsLoading(false);
+          navigate('/resultado', {
+            state: {
+              roteiros,
+              destino,
+            },
+          });
         }
       })
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
       });
   }
 
@@ -104,37 +81,6 @@ export function Home() {
         className='flex w-full flex-col items-center justify-center gap-4 px-4 lg:flex-row'
         onSubmit={handleSubmit}
       >
-        {/* <Popover>
-          <PopoverTrigger
-            className={cn(
-              'w-full min-w-[248px] rounded-xl bg-[#D5B2F0] p-3 shadow-sm lg:w-fit flex flex-col'
-            )}
-          >
-            {origem !== ''
-              ? lugares.find((lugar) => lugar.value === origem)?.label
-              : 'Insira a origem'}
-          </PopoverTrigger>
-          <PopoverContent>
-            <Command>
-              <CommandInput placeholder='Insira a origem...' />
-              <CommandEmpty>Nenhuma cidade encontrada</CommandEmpty>
-              <CommandGroup>
-                {lugares.map((lugar) => (
-                  <CommandItem
-                    key={lugar.value}
-                    onSelect={(currentValue) => {
-                      setOrigem(currentValue === origem ? '' : currentValue);
-                      setOrigemOpen(false);
-                    }}
-                  >
-                    {lugar.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover> */}
-
         <FormItem
           htmlFor='origem'
           label='Origem'
@@ -155,12 +101,13 @@ export function Home() {
             <option value='' disabled>
               Selecione a origem
             </option>
-            <option value='Recife'>Recife</option>
-            <option value='Porto de Galinhas'>Porto de Galinhas</option>
-            <option value='São Paulo'>São Paulo</option>
-            <option value='Rio de Janeiro'>Rio de Janeiro</option>
-            <option value='Salvador'>Salvador</option>
-            <option value='Fortaleza'>Fortaleza</option>
+            {cidades.map((cidade) => {
+              return (
+                <option key={cidade} value={cidade}>
+                  {cidade}
+                </option>
+              );
+            })}
           </select>
         </FormItem>
 
@@ -184,12 +131,13 @@ export function Home() {
             <option value='' disabled>
               Selecione o destino
             </option>
-            <option value='Recife'>Recife</option>
-            <option value='Porto de Galinhas'>Porto de Galinhas</option>
-            <option value='São Paulo'>São Paulo</option>
-            <option value='Rio de Janeiro'>Rio de Janeiro</option>
-            <option value='Salvador'>Salvador</option>
-            <option value='Fortaleza'>Fortaleza</option>
+            {cidades.map((cidade) => {
+              return (
+                <option key={cidade} value={cidade}>
+                  {cidade}
+                </option>
+              );
+            })}
           </select>
         </FormItem>
 
@@ -200,10 +148,10 @@ export function Home() {
             )}
           >
             <div className='flex flex-row justify-between items-center w-full'>
-              <label className='text-xl font-semibold text-[#5E258A]'>
+              <label className='text-xl font-semibold text-purple-800'>
                 Datas
               </label>
-              <CalendarPlus size={24} className='text-[#5E258A]' />
+              <CalendarPlus size={24} className='text-purple-800' />
             </div>
             <span
               className='data-[preenchido=true]:font-bold data-[preenchido=true]:text-[#8A63A9] font-normal italic text-[#9367B5] text-xl'
@@ -254,7 +202,7 @@ export function Home() {
         <FormItem
           htmlFor='checkout'
           label='Checkout'
-          icon={<CalendarPlus size={24} className='text-[#5E258A]' />}
+          icon={<CalendarPlus size={24} className='text-purple-800' />}
         >
           <input
             type='date'
@@ -270,7 +218,7 @@ export function Home() {
         <FormItem
           htmlFor='custo'
           label='Custo'
-          icon={<DollarSign size={24} className='text-[#5E258A]' />}
+          icon={<DollarSign size={24} className='text-purple-800' />}
         >
           <input
             type='number'
@@ -286,7 +234,7 @@ export function Home() {
         <FormItem
           htmlFor='viajantes'
           label='Viajantes'
-          icon={<User2 size={24} className='text-[#5E258A]' />}
+          icon={<User2 size={24} className='text-purple-800' />}
         >
           <input
             type='number'
@@ -301,7 +249,7 @@ export function Home() {
         </FormItem>
         <button
           type='submit'
-          className='flex w-full items-center justify-center rounded bg-[#5E258A] py-4 lg:w-fit lg:rounded-full lg:p-3 disabled:saturate-50'
+          className='flex w-full items-center justify-center rounded bg-purple-800 py-4 lg:w-fit lg:rounded-full lg:p-3 disabled:saturate-50'
           disabled={isLoading}
         >
           {isLoading ? (
@@ -311,7 +259,7 @@ export function Home() {
           )}
         </button>
       </form>
-      <h2 className='text-4xl font-semibold text-[#5E258A] text-center'>
+      <h2 className='text-4xl font-semibold text-purple-800 text-center'>
         Destinos mais buscados
       </h2>
       <div className='flex flex-col gap-16 lg:flex-row'>
@@ -321,7 +269,7 @@ export function Home() {
             alt=''
             className='w-80 h-80 rounded-[80px] object-cover'
           />
-          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-[#5E258A] px-7 py-2 text-center text-white'>
+          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-purple-800 px-7 py-2 text-center text-white'>
             Rio
           </span>
         </div>
@@ -331,7 +279,7 @@ export function Home() {
             alt=''
             className='w-80 h-80 rounded-[80px] object-cover'
           />
-          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-[#5E258A] px-7 py-2 text-center text-white'>
+          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-purple-800 px-7 py-2 text-center text-white'>
             Gramado
           </span>
         </div>
@@ -341,7 +289,7 @@ export function Home() {
             alt=''
             className='w-80 h-80 rounded-[80px] object-cover'
           />
-          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-[#5E258A] px-7 py-2 text-center text-white'>
+          <span className='absolute bottom-4 left-1/2 min-w-[150px] -translate-x-1/2 rounded-full bg-purple-800 px-7 py-2 text-center text-white'>
             Maceió
           </span>
         </div>

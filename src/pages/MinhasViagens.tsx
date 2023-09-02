@@ -30,7 +30,7 @@ export function MinhasViagens() {
       </Link>
 
       <div className='space-y-6 p-4 lg:space-y-8 bg-gradient-to-br from-[#E1C5F6] to-[#D49DFF] rounded-xl max-w-[1000px] w-10/12'>
-        <h1 className='text-4xl text-[#5E258A] font-bold text-center'>
+        <h1 className='text-4xl text-purple-800 font-bold text-center'>
           Viagens salvas
         </h1>
 

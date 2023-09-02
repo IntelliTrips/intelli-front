@@ -11,7 +11,7 @@ export function FormItem({ children, htmlFor, label, icon }: FormItemProps) {
       <div className='flex justify-between'>
         <label
           htmlFor={htmlFor}
-          className='text-xl font-semibold text-[#5E258A]'
+          className='text-xl font-semibold text-purple-800'
         >
           {label}
         </label>
